@@ -66,6 +66,7 @@ housing_hist_price
 housing_hist_price + stat_function(fun = dnorm, args = list(mean = mean(housing$`Sale Price`, na.rm = TRUE), sd = sd(housing$`Sale Price`, na.rm = TRUE)), colour = "black", size = 1)
 housing_hist_size = ggplot(housing, aes(x=sq_ft_lot)) + geom_histogram(aes(y=..density..))
 housing_hist_size + stat_function(fun=dnorm, args = list(mean=mean(housing$sq_ft_lot, na.rm=TRUE), sd=sd(housing$sq_ft_lot, na.rm=TRUE)), colour="black")
+# distributions for both square footage and sale price are extremely positively skewed
 box <- ggplot(housing, aes(x=`Sale Price`, y=sq_ft_lot)) + geom_boxplot()
 box
 # box plot reveals many outliers of extremely high square footage with high prices. This could explain the skewness of the distributions
