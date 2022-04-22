@@ -1,0 +1,54 @@
+---
+title: "ASSIGNMENT 4"
+author: "Stewart Wilson"
+date: '2022-04-22'
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+bibliography: bibliography.bib
+---
+
+# Markdown Basics
+
+## Favorite Foods
+1. Ramen
+2. Thai Curry
+3. Seitan
+## Images
+![All Cases (Log Plot)](C:/Users/Stewart/Documents/GitHub/dsc520/completed/assignment04/plots/10-all-cases-log.png)
+## Add a Quote
+>Whoever fights monsters should see to it that in the process he does not become a monster. 
+>And if you gaze long enough into an abyss, the abyss will gaze back into you. 
+
+## Add an Equation
+\begin{math}c^2=a^2+b^2\end{math}
+## Add a Footnote
+
+R Markdown is very simple to learn but very useful
+
+## Add Citations
+
+* R for Everyone
+* Discovering Statistics Using R
+
+# Inline Code
+```{r covid-code}
+library(ggplot2)
+heights_df = read.csv("GitHub/dsc520/data/r4ds/heights.csv")
+covid_df <- read.csv("GitHub/dsc520/data/nytimes/covid-19-data/us-states.csv")
+california_df <- covid_df[ which( covid_df$state == "California"), ]
+ny_df <- covid_df[ which(covid_df$State == "New York"), ]
+florida_df <- covid_df[ which (covid_df$State == "Florida"), ]
+```
+## NY Times COVID-19 Data
+
+## R4DS Height vs Earnings
+
+# Tables
+
+## Knitr Table with Kable
+
+## Pandoc Table
+
+# References
