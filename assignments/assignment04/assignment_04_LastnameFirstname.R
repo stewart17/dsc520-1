@@ -32,7 +32,7 @@ ggplot(___, aes(___)) + ___ + ___
 # https://www.rdocumentation.org/packages/ggplot2/versions/3.3.0/topics/geom_path
 ## Load the file `"data/nytimes/covid-19-data/us-states.csv"` and
 ## assign it to the `covid_df` dataframe
-covid_df <- read.csv("data/nytimes/covid-19-data/us-states.csv")
+covid_df <- read.csv("GitHub/dsc520-1/data/nytimes/covid-19-data/us-states.csv")
 
 ## Parse the date column using `as.Date()``
 covid_df$date <- ___
@@ -40,13 +40,13 @@ covid_df$date <- ___
 ## Create three dataframes named `california_df`, `ny_df`, and `florida_df`
 ## containing the data from California, New York, and Florida
 california_df <- covid_df[ which( covid_df$state == "California"), ]
-ny_df <- ___
-florida_df <- ___
+ny_df <- covid_df[ which( covid_df$state == "New York"), ]
+florida_df <- covid_df[ which( covid_df$state == "Florida"), ]
 
 ## Plot the number of cases in Florida using `geom_line()`
-ggplot(data=florida_df, aes(x=___, y=___, group=1)) + ___
+ggplot(data=florida_df, aes(x=date, y=cases, group=1)) + geom_line()
 
-## Add lines for New York and California to the plot
+l## Add lines for New York and California to the plot
 ggplot(data=___, aes(x=___, group=1)) +
   geom_line(aes(y = ___)) +
   geom_line(data=___, aes(y = ___)) +
