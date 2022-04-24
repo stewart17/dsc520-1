@@ -17,6 +17,7 @@ bibliography: bibliography.bib
 3. Seitan
 
 ## Images
+
 ![All Cases (Log Plot)](C:/Users/Stewart/Documents/GitHub/dsc520/completed/assignment04/plots/10-all-cases-log.png)
 
 ## Add a Quote
