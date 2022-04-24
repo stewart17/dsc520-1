@@ -18,7 +18,7 @@ bibliography: bibliography.bib
 
 ## Images
 
-![All Cases (Log Plot)](C:/Users/Stewart/Documents/GitHub/dsc520/completed/assignment04/plots/10-all-cases-log.png)
+{![All Cases (Log Plot)](C:/Users/Stewart/Documents/GitHub/dsc520/completed/assignment04/plots/10-all-cases-log.png)}
 
 ## Add a Quote
 >Whoever fights monsters should see to it that in the process he does not become a monster. 
