@@ -1,0 +1,318 @@
+---
+title: "Weeks 8 & 9 Exercises"
+author: "Stewart Wilson"
+date: '2022-05-14'
+output: pdf_document
+---
+# Assignment 06
+```{r assignment06}
+## Load the `data/r4ds/heights.csv` to
+heights_df <- read.csv("C:/Users/Stewart/Documents/GitHUb/dsc520/data/r4ds/heights.csv")
+
+## Load the ggplot2 library
+library(ggplot2)
+
+## Fit a linear model using the `age` variable as the predictor and `earn` as the outcome
+age_lm <-  lm(earn ~ age, data=heights_df)
+
+## View the summary of your model using `summary()`
+summary(age_lm)
+
+## Creating predictions using `predict()`
+age_predict_df <- data.frame(earn = predict(age_lm, heights_df), age=heights_df$age)
+
+## Plot the predictions against the original data
+ggplot(data = age_predict_df, aes(y = earn, x = age)) +
+  geom_point(color='blue') +
+  geom_line(color='red',data = heights_df, aes(y=earn, x=age))
+
+mean_earn <- mean(heights_df$earn)
+## Corrected Sum of Squares Total
+sst <- sum((mean_earn - heights_df$earn)^2)
+## Corrected Sum of Squares for Model
+ssm <- sum((mean_earn - age_predict_df$earn)^2)
+## Residuals
+residuals <- heights_df$earn - age_predict_df$earn
+## Sum of Squares for Error
+sse <- sum(residuals^2)
+## R Squared R^2 = SSM\SST
+r_squared <- ssm / sst
+
+## Number of observations
+n <- nrow(age_predict_df)
+## Number of regression parameters
+p <- 2
+## Corrected Degrees of Freedom for Model (p-1)
+dfm <- p - 1
+## Degrees of Freedom for Error (n-p)
+dfe <- n - p
+## Corrected Degrees of Freedom Total:   DFT = n - 1
+dft <- n - 1
+
+## Mean of Squares for Model:   MSM = SSM / DFM
+msm <- ssm / dfm
+## Mean of Squares for Error:   MSE = SSE / DFE
+mse <- sse / dfe
+## Mean of Squares Total:   MST = SST / DFT
+mst <- sst / dft
+## F Statistic F = MSM/MSE
+f_score <- msm / mse
+
+## Adjusted R Squared R2 = 1 - (1 - R2)(n - 1) / (n - p)
+adjusted_r_squared <- 1 - (1 - r_squared) * (dft) / (dfe)
+
+## Calculate the p-value from the F distribution
+p_value <- pf(f_score, dfm, dft, lower.tail=F)
+```
+# Assignment 07
+```{r assigmnet07}
+## Load the `data/r4ds/heights.csv` to
+heights_df <- read.csv("C:/Users/Stewart/Documents/GitHUb/dsc520/data/r4ds/heights.csv")
+
+# Fit a linear model
+earn_lm <-  lm(earn ~ ed + age + race + height + sex, data=heights_df)
+
+# View the summary of your model
+summary(earn_lm)
+
+predicted_df <- data.frame(
+  earn = predict(earn_lm, heights_df),
+  ed=heights_df$ed, race=heights_df$race, height=heights_df$height,
+  age=heights_df$age, sex=heights_df$sex
+  )
+
+## Compute deviation (i.e. residuals)
+mean_earn <- mean(heights_df$earn)
+## Corrected Sum of Squares Total
+sst <- sum((mean_earn - heights_df$earn) ^ 2)
+## Corrected Sum of Squares for Model
+ssm <- sum((mean_earn - predicted_df$earn)^2)
+## Residuals
+residuals <- heights_df$earn - predicted_df$earn
+## Sum of Squares for Error
+sse <- sum(residuals ^ 2)
+## R Squared
+r_squared <- ssm / sst
+
+## Number of observations
+n <- nrow(predicted_df)
+## Number of regression paramaters
+p <- 8
+## Corrected Degrees of Freedom for Model
+dfm <- p - 1
+## Degrees of Freedom for Error
+dfe <- n - p
+## Corrected Degrees of Freedom Total:   DFT = n - 1
+dft <- n - 1
+
+## Mean of Squares for Model:   MSM = SSM / DFM
+msm <- ssm / dfm
+## Mean of Squares for Error:   MSE = SSE / DFE
+mse <- sse / dfe
+## Mean of Squares Total:   MST = SST / DFT
+mst <- sst / dft
+## F Statistic
+f_score <- msm / mse
+
+## Adjusted R Squared R2 = 1 - (1 - R2)(n - 1) / (n - p)
+adjusted_r_squared <- 1 - (1 - r_squared) * (n - 1) / (n - p)
+```
+# Housing Data
+## i. Initial Transformations to Dataset
+I made two initial transformation  to the dataset. I first changed the column names
+so that they were all consistent sylistically (e.g. Sale Price -> sale_price). I
+also created another column called bath_total which will have the cumulative amount 
+of baths for each house. This will simplify the process when we start to choose predictors.
+```{r, echo=FALSE, include=FALSE}
+library(readxl)
+library(dplyr)
+library(purrr)
+library(stringr)
+```
+```{r}
+housing <- read_excel('C:/Users/Stewart/Documents/GitHub/dsc520/data/week-7-housing.xlsx')
+str(housing)
+# check names
+names(housing)
+# make names uniform
+housing <- housing %>% 
+  rename(sale_date = `Sale Date`, sale_price = `Sale Price`, site_type = sitetype,
+         city_name = ctyname, postal_city_n = postalctyn, sq_ft_living = square_feet_total_living)
+# creates bath_total variable
+housing <- housing %>%
+  mutate(bath_half_count = bath_half_count * .5, bath_3qtr_count = bath_3qtr_count * .75) %>% 
+  select(bath_full_count, bath_half_count, bath_3qtr_count) %>%
+  mutate(bath_total = rowSums(.)) %>% 
+  summarize(housing, cbind(housing, bath_total))
+```
+## ii. Establishing Parameters 
+```{r}
+# simple regression model; predictor = sq_ft_lot, outcome = Sale Price
+sales_simple <- lm(sale_price ~ sq_ft_lot, data = housing)
+```
+### Correlation Tests
+In order to find additional predictors, I will do correlation tests between
+Sale Price and other variables. I will use those predictors which have the highest
+correlation as additional predictors. For the sake of this analysis I will not
+be considering categorical variables.
+``` {r}
+# correlation tests for beds, sq_ft, sq_ft_living, baths, year_built, and year_ren
+beds_cor <- cor(housing$sale_price, housing$bedrooms)
+sq_ft_cor <- cor(housing$sale_price, housing$sq_ft_lot)
+living_cor <- cor(housing$sale_price, housing$sq_ft_living)
+bath_cor <- cor(housing$sale_price, housing$bath_total)
+year_built_cor <- cor(housing$sale_price, housing$year_built)
+year_ren_cor <- cor(housing$sale_price, housing$year_renovated)
+# create list of correlations so we can compare
+cor_summary <- list(Bedrooms = beds_cor, Sq_Ft = sq_ft_cor, Living_Area = living_cor,
+                    Baths = bath_cor, Year_Built = year_built_cor, Year_Ren = year_ren_cor)
+cor_summary
+```
+Based on the preceding analysis, I will be using bedrooms, sq_ft_living, bath_total,
+and year_built as additional predictors. 
+```{r}
+# multiple regression model using sq_ft_living, bedrooms, baths, year_built as predictors
+sales_mult <- lm(sale_price ~ sq_ft_living + bedrooms + bath_total + year_built, data = housing)
+```
+## iii. Summary of Models
+```{r}
+# create a summary for both models
+summary(sales_simple)
+summary(sales_mult)
+```
+
+### Interpretation
+- R Squared for Simple Model: .01435
+- Adjusted R Squared for Simple Model: .01428
+
+- R Squared for Multiple Model: .2189
+- Adjusted R Squared for Multiple Model: .2187
+
+Comparing the  r squared values to one another, we can see that adding
+additional parameters greatly increased the amount of variance explained by our model.
+While this always occurs as more parameters are added, the adjusted r squared value
+accounts for additional parameters. Given this, it is safe to say that including these
+additional predictors helped explain more of the variations found in Sale Price
+
+## iv. Standardized Betas
+```{r, echo=FALSE, include=FALSE}
+library(lm.beta)
+```
+```{r}
+# standardized betas for predictors
+lm.beta(sales_mult)
+```
+
+- Total Living Area Standardized Beta: .436
+- Bedrooms Standardized Beta: -.028
+- Baths Standardized Beta: .002
+- Year Built Standardized Beta: .109
+
+The standardized beta tells us how many standard deviations the outcome changes
+with each standard deviation change in each predictor when all other predictors are held constant.
+Each beta is in standard deviations so they are directly comparable. From the 
+above we can see that total living area had the highest effect on the Sale Price.
+
+## v. Confidence Intervals
+```{r}
+# confidence intervals for predictors
+confint(sales_mult)
+```
+Confidence intervals tell us the odds that the value of b in our sample is the
+true value of b in the population. The smaller the confidence interval, the more
+representative it is of the population. In the parameters we are using, sq_ft_living
+has the tightest confidence interval, indicating it likely representative of the population.
+On the other hand, bedrooms has a huge confidence interval, from -21821 to -3673
+meaning that the parameter is not nearly as representative.
+
+The bath_total result reveals something interesting. Its confidence interval crosses
+zero, meaning that some samples have a negative relationship and some have a positive relationship.
+As such, bath_total is not a good parameter for this model. 
+
+## vi. Comparing Models
+```{r}
+# compare simple and multiple model using anova
+anova(sales_simple, sales_mult)
+```
+
+The F Ratio is 1122.7, which, given a p-value < .001, means that the multiple model
+is a significant improvement on the simple model.
+
+## vii. Casewise Diagnostics
+```{r}
+# calculates and stores casewise diagnostics
+housing$residuals <- resid(sales_mult)
+housing$studnetized_residuals <- rstandard(sales_mult)
+housing$standardized_residuals <- rstudent(sales_mult)
+housing$cooks_distance <- cooks.distance(sales_mult)
+housing$leverage <- hatvalues(sales_mult)
+housing$covariance_ratios <- covratio(sales_mult)
+```
+### viii. Large Standardized Residuals
+```{r}
+# stores residuals that are +/- 2 in own variable
+housing$large_residuals <- housing$standardized_residuals > 2 | housing$standardized_residuals < -2
+```
+#### ix. Sum of Large Residuals
+```{r}
+# adds together all large residuals
+lg_res_ct <- sum(housing$large_residuals)
+lg_res_ct
+```
+#### x. Variables with Large Residuals
+```{r}
+# prints all problematic cases for parameters used in model
+housing[housing$large_residuals, c("sale_price", "sq_ft_living", "bedrooms", "bath_total", "year_built", "standardized_residuals")]
+```
+### xi. Leverage, Cook's Distance, Covariance Ratios for Problematic Cases
+```{r}
+larg_resid <- housing[housing$large_residuals, c("cooks_distance", "leverage", "covariance_ratios")]
+# calculate how many times cook distance is greater than one
+cook_threshold <- 1
+cook_violations_count <- sum(larg_resid$cooks_distance > cook_threshold)
+cook_violations_count
+# calculates how many times leverage is greater than threshold ((k + 1) / n) * 3
+leverage_threshold <- (5 / nrow(housing) * 3)
+leverage_violations_count <- sum(larg_resid$leverage > leverage_threshold)
+leverage_violations_count
+# calculates how many times covariance ratio is greater or lower than upper/lower bounds
+cov_threshold_upper <- 1 + (3 * (5)/nrow(housing)) 
+cov_threshold_lower <- 1 - (3 * 5 / nrow(housing))
+cov_violations_count <- sum(larg_resid$covariance_ratios > cov_threshold_upper | larg_resid$covariance_ratios < cov_threshold_lower)
+cov_violations_count
+```
+## xii. Assumption of Independence
+```{r, echo=FALSE, include=FALSE}
+library(car)
+durbinWatsonTest(sales_mult)
+```
+The D-W Statistic is .558, which means the assumption of independence is not met.
+## xiii. Assumption of No Multicollinearity
+```{r}
+vif(sales_mult)
+1/vif(sales_mult)
+mean(vif(sales_mult))
+```
+There is no VIF larger than 10 nor tolerance lower than .2 which suggests that there
+is no collinearity within the data. However, the average VIF is greater than 1, which
+could indicate possible bias.
+
+## xiv. Assumptions About Residuals
+```{r}
+plot(sales_mult)
+hist(housing$standardized_residuals)
+```
+
+## xv. Overall Conclusions
+Overall, the regression model I created is biased. In the first place it violates the assumption of
+independence. The confidence intervals of the bath_total cross zero, indicating that
+it is not a good parameter. When we observe scatterplots and histograms of the 
+residuals it is likewise seen to deviate from the norm. 
+
+As such, while we may be able to draw some conclusions and insights in this particular
+housing sample, we cannot say that this sample can generalize to the entire population.
+
+In future analyses there are some steps we can take to try and meet these assumptions.
+We can do individual simple regression between sale_price and variables in order
+to see how they stack up on their own. We could then do a more rigid hierarchical
+regression where we add parameters in order of importance.

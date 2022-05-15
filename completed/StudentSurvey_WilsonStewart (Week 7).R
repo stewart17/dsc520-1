@@ -1,3 +1,4 @@
+setwd("/Users/Stewart/Documents/GitHub/dsc520")
 students <- read.csv("data/student-survey.csv")
 head(students)
 cov(students$TimeReading, students$TimeTV)
@@ -21,3 +22,7 @@ cov(students$TimeReading, students$TimeTV)
 library(dplyr)
 students <- students %>% mutate(TimeReadingMin= TimeReading * 60)
 cov(students$TimeReadingMin, students$TimeTV)
+library(ggplot2)
+# -------------------------------------------
+# I will be using Pearson's correlation test because TimeReading and TimeTV
+# are interval variables and also follow a normal distribution
