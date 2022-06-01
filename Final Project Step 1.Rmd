@@ -1,0 +1,110 @@
+---
+title: "Final Project Step 1"
+author: "Stewart Wilson"
+date: '2022-05-15'
+output: pdf_document
+---
+# Introduction
+For my research paper, I will be investigating the global war on terror and whether
+the increased national security measures that have been implemented since 9/11
+have had an effect on terrorism worldwide.
+
+Following the unprecedented attack on the Twin Towers on 9/11, the USA declared a 
+War on Terror. They passed laws such as the PATRIOT ACT, invaded two sovereign nations,
+expanded the surveillance apparatus, and cracked down domestically and abroad on
+any and all hints of terrorist action.
+
+20 years later, however, and questions of its efficacy, cost, and morality loom 
+large. Setting questions of morality aside momentarily, what effect has the 
+War on Terror had on terrorism? The answer to this question is of severe import because
+it offers insight into how the US should continue to operate. If the tactics
+implemented are both costly and ineffective, it can hardly be justified to continue.
+
+Furthermore, this is a question pertaining to data science because, through analyzing
+data related to and influenced by War on Terror policies, we can determine the 
+statistical effect that these policies have had on terrorism.
+
+# Research Questions
+1. What were the largest effects (i.e. policy outcomes) of the declared War on Terror
+2. How much does increase in military spending affect terrorism rates?
+3. How did the invasion of Afghanistan affect terrorism rates?
+4. How did he invasion of Iraq affect terrorism rates?
+6. How do costs of War on Terror and terrorism rates relate?
+7. Do casualties resulting from War on Terror outweigh potential casualties of terrorist acts?
+
+# Approach
+I will be splitting my analysis into three main parts. I will be investigating
+the general costs associated with the War on Terror in relation to terrorism rates generally.
+The next two parts will focus individually on US actions domestically and abroad
+to observe more closely the effectiveness of the War on Terror.
+
+To accomplish this I will first define what policies were implemented domestically and
+which were implemented abroad. Domestically, this will mostly mean observing
+the PATRIOT ACT and agencies such as the Department of Homeland Security. I will
+be measuring their effect on terrorism as well as such metrics as cost and effectives.
+
+For actions taken outside the US, I will mainly be observing the war in Afghanistan
+and the War in Iraq, though it may also expand to consider operations in Libya,
+Syria, Yemen, and Somalia. Once again, cost and effectiveness are my top metrics,
+in addition to the effect these actions have had on terror abroad. Note that
+more research will need to be done to understand just what "effective" means.
+
+## How Does This Address the Problem?
+Taking a look at the War on Terror through three lenses, generally, abroad, and domestically
+will offer a look into the past 20 years of US action. Through this analysis, I 
+hope to glean what factors influence global terrorist rates and whether or not those
+factors are significant enough to warrant the cost, both financially and in lives lost
+for the actions the US has taken. The three different angles are meant to be
+a more exhaustive analysis in case there are factors domestically that are not
+present abroad, and vice versa.
+
+# Data Used
+I have found 3 data sets that will serve as the foundation of this research. 
+
+1. Global Terrorism Database
+  - Obtained From: [Kaggle](https://www.kaggle.com/datasets/START-UMD/gtd)
+  - The Global Terrorism Database is a collection of terrorist attacks from
+  1970 through 2017. It is maintained by the National Consortium for the Study
+  and Responses to Terrorism (START).
+  - There are greater than 100 variables for each attack specifying things such
+  as tactics, perpetrators, targets, and outcomes
+  - This data is collected through unclassified media articles
+  - It uses the definition of terrorism as,
+  
+  >"The threatened or actual use of illegal force and violence by a non-state actor 
+  >to attain a political, economic, religious, or social goal through fear, coercion, or intimidation."
+  
+2. US Military Spending by Year (1960-2020)
+  - Obtained From: [Kaggle](https://www.kaggle.com/datasets/brandonconrady/us-military-spending-by-year-1960-2020)
+  - A collection of US military spending by year from 1960-2020
+  - 4 variables tracked: Year, Defense Budget, GDP, and Population
+  - Possible issue could be how small the data set is. It will probably be wise
+  to merge this data set with another somehow.
+3. Troop Deployment USA
+  - Obtained From: [Kaggle](https://www.kaggle.com/datasets/iskk97/usa-troop-data-in-europe)
+  - A collection of US military deployment from 2006-2015
+  - 9 variables that provide further detail on the nature of the military deployment
+  - nan's are 0's
+
+# Required Packages
+I will most likely require these packages:
+
+- ggplot2
+- dplyr
+- coefplot
+- lm.beta
+- purrr
+- readxl
+- stringr
+- reshape2
+
+# Plots and Tables Needed
+I will need to use plots such as histograms, scatterplots, and qq plots. 
+
+I will also need to utilize tables to display information regarding summary statistics
+such as p-values, r^2, correlation coefficients, etc. 
+
+# Questions for Future Steps
+A big question moving forward is how to anlayze variables across time. Since a 
+large portion of my analysis rests on the effect on terrorism rates over time
+I will need to learn how to do analysis over a certain time span.

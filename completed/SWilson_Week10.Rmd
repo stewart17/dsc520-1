@@ -1,0 +1,103 @@
+---
+title: "Week 10"
+author: "Stewart Wilson"
+date: '2022-05-18'
+output: pdf_document
+---
+
+# Thoracic Surgey Binary Dataset
+## i. Fitting Logistic Regression Model
+```{r loading-packages, include=FALSE}
+library(foreign)
+library(caTools)
+```
+```{r, echo=FALSE}
+thoracic <- read.arff("C:/Users/Stewart/Documents/GitHub/dsc520/data/ThoraricSurgery.arff")
+thoracic_lgm <- glm(Risk1Yr ~ DGN + PRE4 + PRE5 + PRE6 + PRE7 + PRE8 + PRE9 + PRE10
+                    + PRE11 + PRE14 + PRE17 + PRE19 + PRE25 + PRE30 + PRE32 + AGE, 
+                    data = thoracic, family=binomial)
+summary(thoracic_lgm)
+```
+## ii. Best Predictors
+We should narrow down the predictors to those that likely have a statistically
+significant effect on the outcome variable. That is we should observe the variables
+with a p-value < .05. Those are:
+
+- PRE9T (Dyspnoea before surgery)
+- PRE14OC14 (largest size of the original tumor)
+- PRE17T (Type 2 diabetes)
+- PRE30T (Smoking)
+
+We can also convert the coefficients by taking the inverse logit to better understand
+the coefficients.
+```{r, echo=FALSE}
+invlogit <- function(x)
+{
+  1 / (1 + exp(-x))
+  
+}
+invlogit(thoracic_lgm$coefficients)
+```
+Some variables have higher coefficients than the ones listed above and thus
+could be interpreted to have a greater effect on the survival rate. However,
+the z-statistic, which tells us how far the b coefficient is from 0 is very small
+for those with an otherwise high coefficient. 
+
+As such, we can conclude that the variables with the greatest effect on the survival rate
+(and in this case having these conditions lowers your survival rate) are
+
+1. PRE9T (Dyspnoea before surgery) b = .64, z= 2.81, p < .005
+2. PRE14OC14 (largest size of the original tumor) b = .84, z = 2.71 p < .007
+4. PRE30T (Smoking) b = .75, z = 2.17, p < .03
+3. PRE17T (Type 2 diabetes) b = .72, z = 2.09, p < .04
+
+in roughly that order. 
+
+## iii. Computing Accuracy
+```{r, echo = FALSE}
+# Split data into train and test
+split <- sample.split(thoracic, SplitRatio = .8)
+split
+train <- subset(thoracic, split =="TRUE")
+test <- subset(thoracic, split =="FALSE")
+# generate logistic regression models for train
+train_lgm <- glm(Risk1Yr ~ DGN + PRE4 + PRE5 + PRE6 + PRE7 + PRE8 + PRE9 + PRE10
+                    + PRE11 + PRE14 + PRE17 + PRE19 + PRE25 + PRE30 + PRE32 + AGE, 
+                    data = train, family=binomial)
+# run test data thru model
+res1 <- predict(train_lgm, test, type="response")
+res2 <- predict(train_lgm, train, type="response")
+# build confusion matrix
+conf_matrix <- table(Actual_Value = train$Risk1Yr, Predicted_value = res2 > .5)
+conf_matrix
+# accuracy test
+(conf_matrix[[1, 1]] + conf_matrix[[2, 2]]) / sum(conf_matrix)
+```
+
+# Binary Classifier Dataset
+## a. Fit a Logistic Regression Model
+```{r, echo=FALSE}
+binary_df <- read.csv("C:/Users/Stewart/Documents/GitHUb/dsc520/data/binary-classifier-data.csv")
+binary_lgm <- glm(label ~ x + y, data = binary_df, family = binomial)
+summary(binary_lgm)
+```
+
+## b. Accuracy
+```{r, echo=FALSE}
+# split data
+split <- sample.split(binary_df, SplitRatio = .8)
+split
+train2 <- subset(binary_df, split="TRUE")
+test2 <- subset(binary_df, split = "FALSE")
+# build log regression for train
+train_model <- glm(label ~ x + y, data = train2, family = binomial)
+# run test thru model
+res3 <- predict(train_model, test2, type = "response")
+res4 <- predict(train_model, train2, type = "response")
+# confusion matrix
+conf_matrix2 <- table(Actual_Value = train2$label, Predicted_Value = res4 > .5)
+conf_matrix2
+# accuracy
+(conf_matrix2[[1, 1]] + conf_matrix2[[2, 2]]) / sum(conf_matrix2)
+```
+Accuracy is 58.34%

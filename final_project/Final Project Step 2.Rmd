@@ -1,0 +1,250 @@
+---
+title: "Final Project Step 2"
+author: "Stewart Wilson"
+date: '2022-05-22'
+output: pdf_document
+---
+
+# How to Import and Clean My Data
+```{r, echo=FALSE, include=FALSE}
+library(dplyr)
+# import data
+terrorism_db <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/final_project/data/globalterrorismdb.csv")
+military_spending <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/final_project/data/MilitarySpending.csv")
+troop_deployment <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/final_project/data/troopdataEU.csv")
+```
+The first step is to import and clean the data. I import the data from
+the terrorism database, military spending, and troop deployment datasets into their
+own data frame. I then use the head(), tail(), and names() functions to get an idea
+of what the data looks like. 
+
+
+Let's look at each database individually. 
+
+### Terrorism Databse
+```{r, echo=FALSE, include=FALSE}
+# terrorism look
+head(terrorism_db)
+tail(terrorism_db)
+```
+```{r, echo=FALSE}
+names(terrorism_db)
+```
+There are over a 100 variables used in the terrorism database; I need
+to filter that down towards a manageable numbner for the sake of brevity and 
+computer memory when I start combining the datasets. I choose the variables
+
+- iyear
+- imonth
+- country_txt
+- region
+- success
+- nkill
+
+as they seem the most informative for the purposes of viewing terrorism trends broadly.
+```{r, echo=FALSE}
+# select pertinent columns
+terrorism2 <- terrorism_db %>% select(iyear, imonth, country_txt, region, success, nkill)
+```
+
+### Troop Deployment Database
+```{r, echo=FALSE}
+# troop deployment look
+head(troop_deployment)
+tail(troop_deployment)
+names(troop_deployment)
+```
+The troop deployment database, only covers troop deployment in the EU countries,
+so it does not include troop deployment to Afghanistan or Iraq, our key areas of interest. 
+For now, I leave it be, and I will return to it if I need to get more detailed about
+terrorist attacks in Europe specifically.
+
+### Military Spending Dataset
+```{r, echo=FALSE}
+head(military_spending)
+tail(military_spending)
+names(military_spending)
+```
+This dataset looks good. However, I will need to be careful when I merge it to make sure
+the years match with the years of terrorist attacks.
+
+## Merging Datasetes and Final Cleaning
+Now I merge the terrorist database with the military spending database. I do a
+full_join() in order to keep all columns from the two datasets.
+```{r, echo=FALSE}
+terror_war <- terrorism2 %>% full_join(military_spending, by=c('iyear'='Year'))
+```
+Now that the two datasets are one, I use rename_with() to make all the column titles
+the same case for ease of later analysis. I also remove datapoints from before
+1970 since the terrorism database starts in 1970
+```{r, echo=FALSE}
+terror_war <- terror_war %>% rename_with(tolower)
+terror_war <- terror_war %>% filter(iyear>=1970)
+```
+# A Look at the Final Data Set
+And here is the final data set we will be using (sliced to show three different parts
+of the dataframe):
+```{r, echo=FALSE}
+terror_war %>% 
+  arrange(iyear) %>% 
+  slice(c(1:5),(50000:50005),(175000:175005))
+```
+# Future Step Questions
+One thing that I need to continue learning how to do, is investigating details
+in the dataframe that I may not see through just looking at the head and tail but
+could impact my analysis. For instance, how can I check for misspellings of country
+names? 
+
+In general, I should investigate if, in the case of my analysis particularly, it 
+is a better idea to ignore nans and if not, how best to handle them.
+
+The biggest issue is since the data prior to the 2000s was collected retroactively,
+how do I account for the difference in data collection? Or rather, how might the difference
+in how data was collected during some years affect my analysis?
+
+Perhaps most importantly, I need to continue looking for a dataset on troop deployment
+in Afghanistan and Iraq.
+
+# What Information Is Not Self-Evident?
+Information that is not readily available includes:
+
+- Have terrorist attacks increased or decreased in the last 50 years?
+- What has the impact of increased military spending been on terrorism rates?
+- Where are terrorist attacks most focused?
+
+# How Could I Look at the Data
+I could look at the Data in a number of ways. I will filter by country, year, and
+defense budget. I could create a new data set that is just an accumulation of number
+of terrorist attacks per year, which may help simplify the work.
+
+I should split the data set into before 9/11 and after 9/11 and observe the differences.
+This will provide me insight into the effects the War on Terror has had. 
+
+I will also want to do a correlation analysis between terrorist attacks and military spending.
+
+# Manipulation Plan
+In sum, my plan is to slice the data set into a number of subsets and then I will
+compare those data sets to one another to look for trends and differences.The manipulations
+I plan to do are as follows:
+
+- Split dataset into before 9/11 and after 9/11
+- Arrange by number killed
+- Create data set for US terrorist attacks
+- Correlation analysis of terrorist attacks
+
+# Data Summary
+```{r, echo=FALSE, include=FALSE}
+library(pastecs)
+# split into before and after
+before <- terror_war %>% filter(iyear <= 2001)
+after <- terror_war %>% filter(iyear > 2001)
+# num attacks before and after 9/11
+nrow(before)
+nrow(after)
+before_attacks <- before %>% group_by(iyear) %>% summarize(nrow(iyear))
+# summary stats
+stat.desc(before)
+stat.desc(after)
+# those stats aren't very helpful since defense budget is listed multiple times so we should go back to the original dataset
+# Let's look at the defense budget!
+before %>% arrange(desc(nkill))
+spending_before <- military_spending %>% filter(Year <=2001) %>%  summarize(sum(DefenseBudget), mean(DefenseBudget))
+spending_after <- military_spending %>% filter(Year > 2001) %>%  summarize(sum(DefenseBudget), mean(DefenseBudget))
+spending_before
+spending_after
+# us terror attacks
+us_terrorism <- terror_war %>% filter(country_txt=="United States") 
+us_terrorismb <- us_terrorism %>% filter(iyear <= 2001)
+us_terrorisma <- us_terrorism %>% filter(iyear>2001)
+nrow(us_terrorismb)
+nrow(us_terrorisma)
+# correlation tests!!
+attack_yr <- terror_war %>% dplyr::count(iyear)
+class(terror_war$iyear)
+spending <- military_spending %>% filter(Year>=1970)
+war_cor <- full_join(attack_yr, spending, by=c("iyear"="Year"))
+war_cor
+cor1 <- cor.test(attack_yr$n, spending$DefenseBudget, method="spearman", conf.level = .99, exact = FALSE)
+cor2 <- cor(attack_yr$n, spending$DefenseBudget, method="spearman")
+r_sq <- cor2 ** 2
+r_sq
+```
+After manipulating the data following the plan above, we can summarize the data initially as follows:
+
+- There were 71,661 terrorist attacks worldwide recorded between 1970 and 2001 
+- There were 110,044 terrorist attacks worldwide recorded between 2001 and 2019
+- There were 2,434 terrorist attacks in the US recorded between 1970 and 2001
+- There were 402 terrorist attacks in the US recorded between 2001 and 2019
+- The total military expenditure  was $7,779.56 (in billions) between 1970 and 2001
+- The total military expenditure was $12,011.01 (in billions) between 2001 and 2020
+- The mean military expenditure  was $185.23 (in billions) between 1970 and 2001
+- The mean military expenditure was $632.15 (in billions) between 2001 and 2020
+- There is a .449 correlation coefficient between attacks per year and military spending per year
+  - What is interesting here is that there is a positive correlation, meaning the more
+  military expenditure there is, the more terrorist attacks there are
+- Military spending accounts for 20.2% of the variability in terrorist attacks
+- The p-value between terrorist attacks per year and military spending per year is .00092
+  - This means it is unlikely the relationship is due by chance
+
+# Plots and Tables
+The above findings are pretty hideous to read and understanding what they mean can be difficult. 
+We can better visualize these findings through histograms, bar graphs, scatterplots, and tables. 
+
+NOTE: a vertical red line is added to mark the year of 9/11
+```{r, echo=FALSE}
+library(ggplot2)
+
+# attacks by year
+attacks_hist <- ggplot(data=terror_war)+ geom_histogram(aes(x=iyear), fill='orchid4') + xlab("Year") + ylab("Terrorist Attacks") + ggtitle("Terrorist Attacks by Year (1970-2019)") + geom_vline(xintercept = 2001, colour='red')
+attacks_hist
+
+# us attacks by year
+attacks_us <- ggplot(data=us_terrorism) + geom_histogram(aes(x=iyear), fill='blue') + xlab("Year") + ylab("Terrorist Attacks") + ggtitle("US Terrorist Attacks by Year (1970-2019)") + geom_vline(xintercept = 2001, colour='red')
+attacks_us
+
+# military expenditure bar
+expenses <- ggplot(data = military_spending, aes(x=Year, y=DefenseBudget)) + geom_bar(stat="identity", fill='green4')+ xlab("Year") + ylab("Defense Budget") + ggtitle("US Military Expenditure by Year (1960-2020)") + geom_vline(xintercept=2001, colour='red')
+expenses
+
+# plotting military expenditure against terrorist attacks
+scatter1 <- ggplot(war_cor, aes(x=DefenseBudget, y=n)) + geom_point(aes(color=iyear)) + xlab("Defense Budget") + ylab("Terrorist Attacks Per Year") +
+  ggtitle("Relationship Between Defense Budget and Terrorist Attacks")
+scatter1
+
+```
+To help put the correlation coefficient between Defense Budget and Terrorist Attacks
+into perspective, I did correlation tests using US GDP and population as well. The table
+below summarizes those findings.
+```{r,echo=FALSE}
+cor_table <- cor(war_cor, method="spearman")
+colnames(cor_table) <- c("Year", "Attacks", "DefenseBudget", "GDP", "Population")
+rownames(cor_table) <- c("Year", "Attacks", "DefenseBudget", "GDP", "Population")
+knitr::kable(cor_table)
+```
+# Machine Learning?
+I plan on doing some regression analysis to further investigate the relationship
+between defense spending and terrorism rates worldwide.
+
+In addition, I plan on converting the datasets I have into time series and doing
+time series analysis to have a more accurate reading of the changes over time
+to my data.
+# Future Steps
+I have several steps ahead of me as I continue my . As I said above, doing
+regression analysis and time series analysis are my next steps. I also
+need to look over my code to look for ways to make it more efficient. 
+
+Further, the distribution of the data does not follow a normal distribution. I should
+investigate if transforming some of the variables will create a normal distribution.
+
+I will also continue searching for datasets on US involvement in Afghanistan and Iraq.
+While defense spending provides some glimpse into US military action, it is a very general look
+that would be best supported by data dealing with troop deployment.
+
+That said, the biggest thing ahead of me is analyzing my assumptions as I move forward.
+I quickly realized during this step of the analysis that my research questions
+were far too broad to be answered simply in a single analysis. Moreover, there
+was data I needed to conduct my analysis that were simply not available or I have yet
+to find them. As such, I needed to narrow in on the data I had to see what questions I *could* actually respond to. 
+This has led me to investigating military spending and attacks per year specifically. Yet, this
+comes with a series of assumptions I need to investigate in order to ensure my conclusions
+are significant and meaningful.
