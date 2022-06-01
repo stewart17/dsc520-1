@@ -37,3 +37,6 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+final_project/data/globalterrorismdb.csv
+final_project/data/MilitarySpending.csv
+final_project/data/troopdataEU.csv
