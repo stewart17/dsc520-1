@@ -1,0 +1,53 @@
+---
+title: "Weeks 11 & 12 Exercises"
+author: "Stewart Wilson"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+# Introduction to Machine Learning
+```{r loading-packages, echo=FALSE, include=FALSE}
+library(ggplot2)
+library(caTools)
+library(class)
+library(caret)
+```
+## Scatter Plot of Data
+```{r echo=FALSE}
+binary <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/binary-classifier-data.csv")
+trinary <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/trinary-classifier-data.csv")
+binary_plot <- ggplot(binary, aes(x=x, y=y, colour=label)) + geom_point()
+trinary_plot <- ggplot(trinary, aes(x=x, y=y, colour=label)) + geom_point()
+binary_plot
+trinary_plot
+```
+## Training Binary Data Sets
+```{r}
+# split binary into test and training set
+train_index <- createDataPartition(binary$label, p=.6)$Resample1
+training_binary <- binary[train_index, ]
+test_binary <- binary[-train_index, ]
+# matrix for num of clusters
+kmatrix <- c(3, 5, 10, 15, 20, 25)
+# will collect accuracy count for clusters
+accBin <- c()
+# runs nearest neighbor for every given k in kmatrix
+# calculates accuracy for each loops
+index <- 0
+for(i in kmatrix){
+  index = i + 1
+  kModBin <- knn(train=training_binary, test=test_binary, cl=training_binary$label, k=i)
+  accBin[index] <- 100*sum(test_binary$label == kModBin)/NROW(test_binary$label)
+}
+# plotting accuracy vs k
+
+```
+
+```{r}
+split <-  sample.split(binary, SplitRatio = .7)
+train <- binary[split, ]
+test <- binary[-split, ]
+train_labels <- binary[split, 1]
+test_labels <- binary[-split, 1]
+
+knn1 <- knn(train-train)
+```
