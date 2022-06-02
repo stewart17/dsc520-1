@@ -13,8 +13,8 @@ library(caret)
 ```
 ## Scatter Plot of Data
 ```{r echo=FALSE}
-binary <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/binary-classifier-data.csv")
-trinary <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/trinary-classifier-data.csv")
+binary <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/data/binary-classifier-data.csv")
+trinary <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/data/trinary-classifier-data.csv")
 binary_plot <- ggplot(binary, aes(x=x, y=y, colour=label)) + geom_point()
 trinary_plot <- ggplot(trinary, aes(x=x, y=y, colour=label)) + geom_point()
 binary_plot
@@ -39,15 +39,43 @@ for(i in kmatrix){
   accBin[index] <- 100*sum(test_binary$label == kModBin)/NROW(test_binary$label)
 }
 # plotting accuracy vs k
-
+accuracy_df <- data.frame(accBin)
+accuracy_df$ID <- seq.int(nrow(accuracy_df))
+accuracy_plot <- ggplot(data = accuracy_df, aes(x = ID, y = accBin)) + geom_point()
+accuracy_plot
 ```
-
+## Training Trinary Data Sets
 ```{r}
-split <-  sample.split(binary, SplitRatio = .7)
-train <- binary[split, ]
-test <- binary[-split, ]
-train_labels <- binary[split, 1]
-test_labels <- binary[-split, 1]
+# split binary into test and training set
+train_index <- createDataPartition(trinary$label, p=.6)$Resample1
+training_trinary <- trinary[train_index, ]
+test_trinary <- trinary[-train_index, ]
+# matrix for num of clusters
+kmatrix <- c(3, 5, 10, 15, 20, 25)
+# will collect accuracy count for clusters
+acc_Trin <- c()
+# runs nearest neighbor for every given k in kmatrix
+# calculates accuracy for each loops
+index <- 0
+for(i in kmatrix){
+  index = i + 1
+  kModBin <- knn(train=training_trinary, test=test_trinary, cl=training_trinary$label, k=i)
+  acc_Trin[index] <- 100*sum(test_trinary$label == kModBin)/NROW(test_trinary$label)
+}
+# plotting accuracy vs k
+accuracy_df2 <- data.frame(acc_Trin)
+accuracy_df2$ID <- seq.int(nrow(accuracy_df2))
+accuracy_plot2 <- ggplot(data = accuracy_df2, aes(x = ID, y = acc_Trin)) + geom_point()
+accuracy_plot2
 
-knn1 <- knn(train-train)
 ```
+### Linear Model?
+Looking back at the original graphs of the data, I do not think a linear classifier would work
+well on these datasets. There is no clear straight line that could split either
+dataset nicely so the model would most likely not be very accurate.
+
+Looking back at the accuracy from last week's exercises (58%), it is clear
+that clustering vastly improved the accuracy of the model.
+
+# Clustering
+
