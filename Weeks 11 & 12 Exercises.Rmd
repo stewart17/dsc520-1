@@ -10,6 +10,9 @@ library(ggplot2)
 library(caTools)
 library(class)
 library(caret)
+library(useful)
+library(plyr)
+library(purrr)
 ```
 ## Scatter Plot of Data
 ```{r echo=FALSE}
@@ -78,4 +81,42 @@ Looking back at the accuracy from last week's exercises (58%), it is clear
 that clustering vastly improved the accuracy of the model.
 
 # Clustering
-
+```{r}
+clustering <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/clustering-data.csv")
+clust_scatter <- ggplot(data=clustering, aes(x=x, y=y)) + geom_point()
+clust_scatter
+```
+```{r}
+set.seed(278613)
+km2 <- kmeans(x=clustering, centers = 2)
+plot(km2, data=clustering)
+km3 <-  kmeans(x=clustering, centers = 3)
+plot(km3, data=clustering)
+km4 <-  kmeans(x=clustering, centers = 4)
+plot(km4, data=clustering)
+km5 <-  kmeans(x=clustering, centers = 5)
+plot(km5, data=clustering)
+km6 <-  kmeans(x=clustering, centers = 6)
+plot(km6, data=clustering)
+km7 <-  kmeans(x=clustering, centers = 7)
+plot(km7, data=clustering)
+km8 <-  kmeans(x=clustering, centers = 8)
+plot(km8, data=clustering)
+km9 <-  kmeans(x=clustering, centers = 9)
+plot(km9, data=clustering)
+km10 <- kmeans(x=clustering, centers =10)
+plot(km10, data=clustering)
+km11 <-  kmeans(x=clustering, centers = 11)
+plot(km11, data=clustering)
+km12 <-  kmeans(x=clustering, centers = 12)
+plot(km12, data=clustering)
+```
+## Average Distance
+```{r}
+distances <- 2:12 %>% map(function(k) kmeans(x=clustering, k)$tot.withinss)
+distances <- unlist(distances, recursive=FALSE)
+distance_df <- data.frame(distances)
+distance_df$ID <- seq.int(nrow(distance_df))
+ggplot(distance_df, aes(x=ID, y=distances)) + geom_point()
+```
+Based on the above graph, the elbow point is at k=5, meaning 5 clusters is an ideal amount for the dataset. 
