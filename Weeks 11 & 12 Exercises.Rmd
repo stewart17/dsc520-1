@@ -16,8 +16,9 @@ library(purrr)
 ```
 ## Scatter Plot of Data
 ```{r echo=FALSE}
-binary <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/data/binary-classifier-data.csv")
-trinary <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/data/trinary-classifier-data.csv")
+binary <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/binary-classifier-data.csv")
+trinary <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/trinary-classifier-data.csv")
+# scatterplot of binary and trinary data
 binary_plot <- ggplot(binary, aes(x=x, y=y, colour=label)) + geom_point()
 trinary_plot <- ggplot(trinary, aes(x=x, y=y, colour=label)) + geom_point()
 binary_plot
@@ -43,13 +44,13 @@ for(i in kmatrix){
 }
 # plotting accuracy vs k
 accuracy_df <- data.frame(accBin)
-accuracy_df$ID <- seq.int(nrow(accuracy_df))
-accuracy_plot <- ggplot(data = accuracy_df, aes(x = ID, y = accBin)) + geom_point()
+accuracy_df$k <- seq.int(nrow(accuracy_df))
+accuracy_plot <- ggplot(data = accuracy_df, aes(x = k, y = accBin)) + geom_point() + xlab("k") + ylab("Accuracy") + ggtitle("Binary Cluster Accuracy")
 accuracy_plot
 ```
 ## Training Trinary Data Sets
 ```{r}
-# split binary into test and training set
+# split trinary into test and training set
 train_index <- createDataPartition(trinary$label, p=.6)$Resample1
 training_trinary <- trinary[train_index, ]
 test_trinary <- trinary[-train_index, ]
@@ -67,8 +68,8 @@ for(i in kmatrix){
 }
 # plotting accuracy vs k
 accuracy_df2 <- data.frame(acc_Trin)
-accuracy_df2$ID <- seq.int(nrow(accuracy_df2))
-accuracy_plot2 <- ggplot(data = accuracy_df2, aes(x = ID, y = acc_Trin)) + geom_point()
+accuracy_df2$k <- seq.int(nrow(accuracy_df2))
+accuracy_plot2 <- ggplot(data = accuracy_df2, aes(x = k, y = acc_Trin)) + geom_point() + ylab("Accuracy") + ggtitle("Trinary Cluster Accuracy")
 accuracy_plot2
 
 ```
@@ -83,10 +84,12 @@ that clustering vastly improved the accuracy of the model.
 # Clustering
 ```{r}
 clustering <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/clustering-data.csv")
+# scatterplot of the data
 clust_scatter <- ggplot(data=clustering, aes(x=x, y=y)) + geom_point()
 clust_scatter
 ```
 ```{r}
+# set seeds and plots each cluster result for every k between 2 and 12
 set.seed(278613)
 km2 <- kmeans(x=clustering, centers = 2)
 plot(km2, data=clustering)
@@ -113,10 +116,13 @@ plot(km12, data=clustering)
 ```
 ## Average Distance
 ```{r}
+# list of distances for each k
 distances <- 2:12 %>% map(function(k) kmeans(x=clustering, k)$tot.withinss)
+# distances currently list of lists this turns it into list
 distances <- unlist(distances, recursive=FALSE)
+# make distances a data frame and then plot k vs distance
 distance_df <- data.frame(distances)
 distance_df$ID <- seq.int(nrow(distance_df))
-ggplot(distance_df, aes(x=ID, y=distances)) + geom_point()
+ggplot(distance_df, aes(x=ID, y=distances)) + geom_point() + xlab("k") + ylab("Average Distance") + ggtitle("Average Distances vs Number of Clusters")
 ```
 Based on the above graph, the elbow point is at k=5, meaning 5 clusters is an ideal amount for the dataset. 

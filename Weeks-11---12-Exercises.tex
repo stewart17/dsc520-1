@@ -1,0 +1,329 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Weeks 11 \& 12 Exercises},
+  pdfauthor={Stewart Wilson},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Weeks 11 \& 12 Exercises}
+\author{Stewart Wilson}
+\date{2022-06-02}
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduction-to-machine-learning}{%
+\section{Introduction to Machine
+Learning}\label{introduction-to-machine-learning}}
+
+\hypertarget{scatter-plot-of-data}{%
+\subsection{Scatter Plot of Data}\label{scatter-plot-of-data}}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-1-1.pdf}
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-1-2.pdf}
+\#\# Training Binary Data Sets
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# split binary into test and training set}
+\NormalTok{train\_index }\OtherTok{\textless{}{-}} \FunctionTok{createDataPartition}\NormalTok{(binary}\SpecialCharTok{$}\NormalTok{label, }\AttributeTok{p=}\NormalTok{.}\DecValTok{6}\NormalTok{)}\SpecialCharTok{$}\NormalTok{Resample1}
+\NormalTok{training\_binary }\OtherTok{\textless{}{-}}\NormalTok{ binary[train\_index, ]}
+\NormalTok{test\_binary }\OtherTok{\textless{}{-}}\NormalTok{ binary[}\SpecialCharTok{{-}}\NormalTok{train\_index, ]}
+\CommentTok{\# matrix for num of clusters}
+\NormalTok{kmatrix }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{15}\NormalTok{, }\DecValTok{20}\NormalTok{, }\DecValTok{25}\NormalTok{)}
+\CommentTok{\# will collect accuracy count for clusters}
+\NormalTok{accBin }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\CommentTok{\# runs nearest neighbor for every given k in kmatrix}
+\CommentTok{\# calculates accuracy for each loops}
+\NormalTok{index }\OtherTok{\textless{}{-}} \DecValTok{0}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in}\NormalTok{ kmatrix)\{}
+\NormalTok{  index }\OtherTok{=}\NormalTok{ i }\SpecialCharTok{+} \DecValTok{1}
+\NormalTok{  kModBin }\OtherTok{\textless{}{-}} \FunctionTok{knn}\NormalTok{(}\AttributeTok{train=}\NormalTok{training\_binary, }\AttributeTok{test=}\NormalTok{test\_binary, }\AttributeTok{cl=}\NormalTok{training\_binary}\SpecialCharTok{$}\NormalTok{label, }\AttributeTok{k=}\NormalTok{i)}
+\NormalTok{  accBin[index] }\OtherTok{\textless{}{-}} \DecValTok{100}\SpecialCharTok{*}\FunctionTok{sum}\NormalTok{(test\_binary}\SpecialCharTok{$}\NormalTok{label }\SpecialCharTok{==}\NormalTok{ kModBin)}\SpecialCharTok{/}\FunctionTok{NROW}\NormalTok{(test\_binary}\SpecialCharTok{$}\NormalTok{label)}
+\NormalTok{\}}
+\CommentTok{\# plotting accuracy vs k}
+\NormalTok{accuracy\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(accBin)}
+\NormalTok{accuracy\_df}\SpecialCharTok{$}\NormalTok{k }\OtherTok{\textless{}{-}} \FunctionTok{seq.int}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(accuracy\_df))}
+\NormalTok{accuracy\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ accuracy\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ k, }\AttributeTok{y =}\NormalTok{ accBin)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{xlab}\NormalTok{(}\StringTok{"k"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{ylab}\NormalTok{(}\StringTok{"Accuracy"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Binary Cluster Accuracy"}\NormalTok{)}
+\NormalTok{accuracy\_plot}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 20 rows containing missing values (geom_point).
+\end{verbatim}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-2-1.pdf}
+\#\# Training Trinary Data Sets
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# split trinary into test and training set}
+\NormalTok{train\_index }\OtherTok{\textless{}{-}} \FunctionTok{createDataPartition}\NormalTok{(trinary}\SpecialCharTok{$}\NormalTok{label, }\AttributeTok{p=}\NormalTok{.}\DecValTok{6}\NormalTok{)}\SpecialCharTok{$}\NormalTok{Resample1}
+\NormalTok{training\_trinary }\OtherTok{\textless{}{-}}\NormalTok{ trinary[train\_index, ]}
+\NormalTok{test\_trinary }\OtherTok{\textless{}{-}}\NormalTok{ trinary[}\SpecialCharTok{{-}}\NormalTok{train\_index, ]}
+\CommentTok{\# matrix for num of clusters}
+\NormalTok{kmatrix }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{15}\NormalTok{, }\DecValTok{20}\NormalTok{, }\DecValTok{25}\NormalTok{)}
+\CommentTok{\# will collect accuracy count for clusters}
+\NormalTok{acc\_Trin }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\CommentTok{\# runs nearest neighbor for every given k in kmatrix}
+\CommentTok{\# calculates accuracy for each loops}
+\NormalTok{index }\OtherTok{\textless{}{-}} \DecValTok{0}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in}\NormalTok{ kmatrix)\{}
+\NormalTok{  index }\OtherTok{=}\NormalTok{ i }\SpecialCharTok{+} \DecValTok{1}
+\NormalTok{  kModBin }\OtherTok{\textless{}{-}} \FunctionTok{knn}\NormalTok{(}\AttributeTok{train=}\NormalTok{training\_trinary, }\AttributeTok{test=}\NormalTok{test\_trinary, }\AttributeTok{cl=}\NormalTok{training\_trinary}\SpecialCharTok{$}\NormalTok{label, }\AttributeTok{k=}\NormalTok{i)}
+\NormalTok{  acc\_Trin[index] }\OtherTok{\textless{}{-}} \DecValTok{100}\SpecialCharTok{*}\FunctionTok{sum}\NormalTok{(test\_trinary}\SpecialCharTok{$}\NormalTok{label }\SpecialCharTok{==}\NormalTok{ kModBin)}\SpecialCharTok{/}\FunctionTok{NROW}\NormalTok{(test\_trinary}\SpecialCharTok{$}\NormalTok{label)}
+\NormalTok{\}}
+\CommentTok{\# plotting accuracy vs k}
+\NormalTok{accuracy\_df2 }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(acc\_Trin)}
+\NormalTok{accuracy\_df2}\SpecialCharTok{$}\NormalTok{k }\OtherTok{\textless{}{-}} \FunctionTok{seq.int}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(accuracy\_df2))}
+\NormalTok{accuracy\_plot2 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ accuracy\_df2, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ k, }\AttributeTok{y =}\NormalTok{ acc\_Trin)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{ylab}\NormalTok{(}\StringTok{"Accuracy"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Trinary Cluster Accuracy"}\NormalTok{)}
+\NormalTok{accuracy\_plot2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 20 rows containing missing values (geom_point).
+\end{verbatim}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-3-1.pdf}
+\#\#\# Linear Model? Looking back at the original graphs of the data, I
+do not think a linear classifier would work well on these datasets.
+There is no clear straight line that could split either dataset nicely
+so the model would most likely not be very accurate.
+
+Looking back at the accuracy from last week's exercises (58\%), it is
+clear that clustering vastly improved the accuracy of the model.
+
+\hypertarget{clustering}{%
+\section{Clustering}\label{clustering}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clustering }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"C:/Users/stewa/Documents/GitHub/dsc520{-}1/data/clustering{-}data.csv"}\NormalTok{)}
+\CommentTok{\# scatterplot of the data}
+\NormalTok{clust\_scatter }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data=}\NormalTok{clustering, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{x, }\AttributeTok{y=}\NormalTok{y)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{()}
+\NormalTok{clust\_scatter}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# set seeds and plots each cluster result for every k between 2 and 12}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{278613}\NormalTok{)}
+\NormalTok{km2 }\OtherTok{\textless{}{-}} \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km2, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km3 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{3}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km3, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km4 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{4}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km4, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km5 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{5}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km5, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km6 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{6}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km6, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km7 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{7}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km7, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-6.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km8 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{8}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km8, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-7.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km9 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{9}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km9, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-8.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km10 }\OtherTok{\textless{}{-}} \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =}\DecValTok{10}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km10, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-9.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km11 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{11}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km11, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-10.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{km12 }\OtherTok{\textless{}{-}}  \FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, }\AttributeTok{centers =} \DecValTok{12}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(km12, }\AttributeTok{data=}\NormalTok{clustering)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-5-11.pdf}
+\#\# Average Distance
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# list of distances for each k}
+\NormalTok{distances }\OtherTok{\textless{}{-}} \DecValTok{2}\SpecialCharTok{:}\DecValTok{12} \SpecialCharTok{\%\textgreater{}\%} \FunctionTok{map}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(k) }\FunctionTok{kmeans}\NormalTok{(}\AttributeTok{x=}\NormalTok{clustering, k)}\SpecialCharTok{$}\NormalTok{tot.withinss)}
+\CommentTok{\# distances currently list of lists this turns it into list}
+\NormalTok{distances }\OtherTok{\textless{}{-}} \FunctionTok{unlist}\NormalTok{(distances, }\AttributeTok{recursive=}\ConstantTok{FALSE}\NormalTok{)}
+\CommentTok{\# make distances a data frame and then plot k vs distance}
+\NormalTok{distance\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(distances)}
+\NormalTok{distance\_df}\SpecialCharTok{$}\NormalTok{ID }\OtherTok{\textless{}{-}} \FunctionTok{seq.int}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(distance\_df))}
+\FunctionTok{ggplot}\NormalTok{(distance\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{ID, }\AttributeTok{y=}\NormalTok{distances)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{xlab}\NormalTok{(}\StringTok{"k"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{ylab}\NormalTok{(}\StringTok{"Average Distance"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Average Distances vs Number of Clusters"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Weeks-11---12-Exercises_files/figure-latex/unnamed-chunk-6-1.pdf}
+Based on the above graph, the elbow point is at k=5, meaning 5 clusters
+is an ideal amount for the dataset.
+
+\end{document}
