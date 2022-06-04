@@ -14,16 +14,18 @@ library(useful)
 library(plyr)
 library(purrr)
 ```
+
 ## Scatter Plot of Data
-```{r echo=FALSE}
-binary <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/binary-classifier-data.csv")
-trinary <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/trinary-classifier-data.csv")
+```{r}
+binary <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/data/binary-classifier-data.csv")
+trinary <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/data/trinary-classifier-data.csv")
 # scatterplot of binary and trinary data
 binary_plot <- ggplot(binary, aes(x=x, y=y, colour=label)) + geom_point()
 trinary_plot <- ggplot(trinary, aes(x=x, y=y, colour=label)) + geom_point()
 binary_plot
 trinary_plot
 ```
+
 ## Training Binary Data Sets
 ```{r}
 # split binary into test and training set
@@ -48,8 +50,9 @@ accuracy_df$k <- seq.int(nrow(accuracy_df))
 accuracy_plot <- ggplot(data = accuracy_df, aes(x = k, y = accBin)) + geom_point() + xlab("k") + ylab("Accuracy") + ggtitle("Binary Cluster Accuracy")
 accuracy_plot
 ```
+
 ## Training Trinary Data Sets
-```{r}
+```{r, echo=FALSE}
 # split trinary into test and training set
 train_index <- createDataPartition(trinary$label, p=.6)$Resample1
 training_trinary <- trinary[train_index, ]
@@ -73,6 +76,7 @@ accuracy_plot2 <- ggplot(data = accuracy_df2, aes(x = k, y = acc_Trin)) + geom_p
 accuracy_plot2
 
 ```
+
 ### Linear Model?
 Looking back at the original graphs of the data, I do not think a linear classifier would work
 well on these datasets. There is no clear straight line that could split either
@@ -83,7 +87,7 @@ that clustering vastly improved the accuracy of the model.
 
 # Clustering
 ```{r}
-clustering <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/data/clustering-data.csv")
+clustering <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/data/clustering-data.csv")
 # scatterplot of the data
 clust_scatter <- ggplot(data=clustering, aes(x=x, y=y)) + geom_point()
 clust_scatter
@@ -114,6 +118,7 @@ plot(km11, data=clustering)
 km12 <-  kmeans(x=clustering, centers = 12)
 plot(km12, data=clustering)
 ```
+
 ## Average Distance
 ```{r}
 # list of distances for each k

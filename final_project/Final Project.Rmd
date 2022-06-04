@@ -1,0 +1,26 @@
+---
+title: "Final Project"
+author: "Stewart Wilson"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+# Introduction
+Following the unprecedented attack on the Twin Towers on 9/11, the USA declared a 
+War on Terror. They passed laws such as the PATRIOT ACT, invaded two sovereign nations,
+expanded the surveillance apparatus, and cracked down domestically and abroad on
+any and all hints of terrorist action.
+
+20 years later, however, and questions of its efficacy, cost, and morality loom 
+large. Setting questions of morality aside momentarily, what effect has the 
+War on Terror had on terrorism? The answer to this question is of severe import because
+it offers insight into how the US should continue to operate. If the tactics
+implemented are both costly and ineffective, it can hardly be justified to continue.
+
+Furthermore, this is a question pertaining to data science because, through analyzing
+data related to and influenced by War on Terror policies, we can determine the 
+statistical effect that these policies have had on terrorism.
+
+
+
+# The Question At Hand
+The problem statement I set out to deal 
