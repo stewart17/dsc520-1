@@ -4,23 +4,132 @@ author: "Stewart Wilson"
 date: "`r Sys.Date()`"
 output: pdf_document
 ---
-# Introduction
-Following the unprecedented attack on the Twin Towers on 9/11, the USA declared a 
+# I. Introduction
+  Following the unprecedented attack on the Twin Towers on 9/11, the USA declared a 
 War on Terror. They passed laws such as the PATRIOT ACT, invaded two sovereign nations,
 expanded the surveillance apparatus, and cracked down domestically and abroad on
-any and all hints of terrorist action.
-
-20 years later, however, and questions of its efficacy, cost, and morality loom 
-large. Setting questions of morality aside momentarily, what effect has the 
-War on Terror had on terrorism? The answer to this question is of severe import because
-it offers insight into how the US should continue to operate. If the tactics
+any and all hints of terrorist action. 20 years later, however, and questions of its efficacy, cost, and morality loom large. Setting questions of morality aside momentarily, 
+what effect has the War on Terror had on terrorism? The answer to this question is of severe import because it offers insight into how the US should continue to operate. If the tactics
 implemented are both costly and ineffective, it can hardly be justified to continue.
-
 Furthermore, this is a question pertaining to data science because, through analyzing
 data related to and influenced by War on Terror policies, we can determine the 
 statistical effect that these policies have had on terrorism.
 
+  The following exploratory data analysis is meant to be a beginning towards answering
+some of these questions. It is by no means an exhaustive analysis. Indeed, as 
+will be seen, as the data is explored, more questions are raised than are answered.
+Yet, while there are no definitive answers given in this analysis, several insights
+can be gained that could serve as signposts signalling the way for future data 
+analysis.
+
+  The structure of this paper follows the pathway of my thinking through the problem
+of quantifying the effect the War on Terror has had on global terrorism rates.
+I will lay out the problem in more details, summarize how I addressed it, explain
+the insights I gained, the implications these insights raise, and the limitations
+inherent to my analysis. I hope the reader will find this analysis as interesting
+and impactful as I did. 
+
+# II. The Problem at Hand
+  At first, I began by posing the problem as broadly as possible: did the War on
+Terror have a significant effect on terrorism worldwide and abroad. I immediately
+ran into difficulties trying to break that question into manageable parts. What exactly
+is the War on Terror? Can it be reduced to quantitative terms? How do you compare
+terrorism globally to terrorism domestically? How do you compare domestic responses
+to global ones?
+
+  In the first step of my research, I decided to split the problem in two.
+I would investigate domestic terror in relation to domestic responses and
+I would investigate global terror in relation to U.S. global response. Domestically,
+I would focus on the actions of Department of Homeland Security and globally on 
+US military action.
+
+  However, when I began the second step of my analysis, I had to further restrict the problem.
+There just simply was not enough publicly available data to sufficiently investigate
+the domestic response to terrorism. Moreover, I could only find data related to 
+troop deployment in the European Union, which while helpful leaves out West Asia
+where much of US troops were focused during the War on Terror.
+
+  As such, I limited my analysis to investigating the relationship between 
+US Defense Budget and global terrorism rates, with the Defense Expenses being a proxy
+for the actions of the War on Terror. This problem was much more manageable for
+the scope of the project, though it came with many limitations, as I will expand on
+in Section VI.
+
+# III. Addressing the Problem
+  During the second step of my project, I imported data, cleaned it, and analyzed it.
+  
+## Data Importing and Cleaning
+  I used 3 datasets during my analysis. The first was the [Global Terrorism Database](https://www.kaggle.com/datasets/START-UMD/gtd), which contained over 100
+variables for each attack specifying things such as tactics, perpetrators, targets, and outcomes. I determined that the following variables were most relevant to my analysis:
+
+- iyear: year attack conducted
+- imonth: month attack conducted
+- country_txt: country where attack took place
+- region: region where attack took place
+- success: whether the attack was successful
+- nkill: number killed during attack
+
+  As said in the pervious section, the Troop Deployment dataset proved less useful than
+anticipated, so I left it aside to streamline my research.
 
 
-# The Question At Hand
-The problem statement I set out to deal 
+  The third dataset contained US Defense Spending between 1960 and 2020.
+I merged this dataset with Global Terrorism Database,
+made the variable names uniform, and limited the years between 1970 and 2019.
+
+The final dataset can be seen below.
+```{r data-cleaning, echo=FALSE}
+library(dplyr)
+# import data
+terrorism_db <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/final_project/data/globalterrorismdb.csv")
+military_spending <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/final_project/data/MilitarySpending.csv")
+terrorism2 <- terrorism_db %>% select(iyear, imonth, country_txt, region, success, nkill)
+terror_war <- terrorism2 %>% full_join(military_spending, by=c('iyear'='Year'))
+terror_war <- terror_war %>% rename_with(tolower)
+terror_war <- terror_war %>% filter(iyear>=1970)
+terror_war %>% 
+  arrange(iyear) %>% 
+  slice(c(1:5),(50000:50005),(175000:175005))
+```
+
+##
+```{r analysis-so-far, echo=FALSE}
+
+
+library(pastecs)
+# split into before and after
+before <- terror_war %>% filter(iyear <= 2001)
+after <- terror_war %>% filter(iyear > 2001)
+# num attacks before and after 9/11
+before_attacks <- before %>% group_by(iyear) %>% summarize(nrow(iyear))
+# Let's look at the defense budget!
+before %>% arrange(desc(nkill))
+spending_before <- military_spending %>% filter(Year <=2001) %>%  summarize(sum(DefenseBudget), mean(DefenseBudget))
+spending_after <- military_spending %>% filter(Year > 2001) %>%  summarize(sum(DefenseBudget), mean(DefenseBudget))
+# us terror attacks
+us_terrorism <- terror_war %>% filter(country_txt=="United States") 
+us_terrorismb <- us_terrorism %>% filter(iyear <= 2001)
+us_terrorisma <- us_terrorism %>% filter(iyear>2001)
+# correlation tests!!
+attack_yr <- terror_war %>% dplyr::count(iyear)
+spending <- military_spending %>% filter(Year>=1970)
+war_cor <- full_join(attack_yr, spending, by=c("iyear"="Year"))
+cor1 <- cor.test(attack_yr$n, spending$DefenseBudget, method="spearman", conf.level = .99, exact = FALSE)
+cor2 <- cor(attack_yr$n, spending$DefenseBudget, method="spearman")
+r_sq <- cor2 ** 2
+# find p-values
+cor1
+# p-value < .005 so not likely due to chance
+```
+```{r}
+war_cor
+```
+```{r regression, echo=FALSE, include=FALSE}
+library(ggplot2)
+# simple regression outcome: Attacks per year, predictor: defense budget
+terror_lm <-  lm(n ~ DefenseBudget, data=war_cor)
+summary(terror_lm)
+scatter1 <- ggplot(war_cor, aes(x=DefenseBudget, y=n)) + geom_point(aes(color=iyear)) +  geom_smooth(method="lm") + xlab("Defense Budget") + ylab("Terrorist Attacks Per Year") + 
+  ggtitle("Relationship Between Defense Budget and Terrorist Attacks with Regression Line")
+scatter1
+```
