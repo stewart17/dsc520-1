@@ -1,5 +1,6 @@
 ---
-title: "Final Project"
+title: "What Effect Does the War on Terror Have On Terrorism?"
+subtitle: "Final Project"
 author: "Stewart Wilson"
 date: "`r Sys.Date()`"
 output: pdf_document
@@ -81,8 +82,8 @@ The final dataset can be seen below.
 ```{r data-cleaning, echo=FALSE}
 library(dplyr)
 # import data
-terrorism_db <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/final_project/data/globalterrorismdb.csv")
-military_spending <- read.csv("C:/Users/stewa/Documents/GitHub/dsc520-1/final_project/data/MilitarySpending.csv")
+terrorism_db <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/final_project/data/globalterrorismdb.csv")
+military_spending <- read.csv("C:/Users/Stewart/Documents/GitHub/dsc520/final_project/data/MilitarySpending.csv")
 terrorism2 <- terrorism_db %>% select(iyear, imonth, country_txt, region, success, nkill)
 terror_war <- terrorism2 %>% full_join(military_spending, by=c('iyear'='Year'))
 terror_war <- terror_war %>% rename_with(tolower)
@@ -97,16 +98,18 @@ terror_war %>%
 The plan was first to slice the data into attacks before 9/11 and after 9/11. Then,
 observe comparative statistical characteristics between the slices. Finally, 
 perform correlation analysis on the Defense Spending and Number of Terrorist Attacks.
+
   One problem I ran into at this stage was meaningfully comparing variables to one another.
 Given that the defense spending values were repeated multiple times (more terrorist attacks
 per year than number of defense budgets naturally), the effect of spending was vastly
 overstated. To correct for this, I created a new dataset that contained one column
 for defense spending, and one for total attacks per year. This allowed me a greater
 ability to see the general relationship between attacks and spending.
+
   I created the following tables/graphs to visualize the results of my analysis.
 Please note that the red line in the first three graphs mark 9/11.
 
-```{r analysis-so-far, echo=FALSE}
+```{r analysis-so-far, echo=FALSE, include=FALSE}
 library(pastecs)
 # split into before and after
 before <- terror_war %>% filter(iyear <= 2001)
@@ -134,6 +137,7 @@ r_sq <- cor2 ** 2
 
 ```{r visualizations, echo=FALSE}
 # attacks by year
+library(ggplot2)
 attacks_hist <- ggplot(data=terror_war)+ geom_histogram(aes(x=iyear), binwidth = 1, fill='orchid4') + xlab("Year") + ylab("Terrorist Attacks") + ggtitle("Terrorist Attacks by Year (1970-2019)") + geom_vline(xintercept = 2001, colour='red')
 attacks_hist
 
@@ -162,14 +166,14 @@ knitr::kable(cor_table)
 ### Regression Analysis
   Observing the scatterplot above, it appears the Defense Budget and Attacks Per Year
 follow a linear relationship. This motivated me to do a simple regression analysis.
-The below graph is the scatterplot above with a regression line fitted to it.
+The below graph is the scatterplot above with a regression line fitted to it. One
+can see that it is a fairly good fit, though there are some outliers in the 600 billion 
+dollar spending domain.
 
-```{r regression, echo=FALSE, include=FALSE}
+```{r regression, echo=FALSE}
 # simple regression outcome: Attacks per year, predictor: defense budget
 terror_lm <-  lm(n ~ DefenseBudget, data=war_cor)
-summary(terror_lm)
-scatter2 <- ggplot(war_cor, aes(x=DefenseBudget, y=n)) + geom_point(aes(color=iyear)) +  geom_smooth(method="lm") + xlab("Defense Budget") + ylab("Terrorist Attacks Per Year") + 
-  ggtitle("Relationship Between Defense Budget and Terrorist Attacks with Regression Line")
+scatter2 <- ggplot(war_cor, aes(x=DefenseBudget, y=n)) + geom_point(aes(color=iyear)) +  geom_smooth(method="lm") + xlab("Defense Budget") + ylab("Terrorist Attacks Per Year") + ggtitle("Defense Budget vs Terrorist Attacks w/ Regression Line")
 scatter2
 ```
 
@@ -181,20 +185,81 @@ if particular years correlate with increased terrorist attacks the next year, on
 could investigate events that may have occurred that explain that rise. In this way,
 we can begin to build a more robust idea of the relationship between US military action
 and terror.
+
   The model would be useful in trying to predict the amount of terrorist attacks in 
 future years. This model could be compared to the regression model to see which
 is more accurate. If the time series model is more accurate than the regression model,
 it is again likely there is a third (or more) relation with changing terrorist rates.
 
-# Insights Gained
+# IV. Insights Gained
   There were a number of insights gained from the preceding analysis. Military 
 expenditure skyrocketed post 9/11, which is suggestive of an increase in military
 action in accordance with the War on Terror. Terrorist attacks too, increased
 after 2001, though they decreased domestically in the US.
+
   The most striking insight gained by far from the analysis is the positive
 correlation between US defense spending and terrorist attacks per year. This implies
 that as defense spending rose, so too did the number of terrorist attacks. The analysis
 also showed that this relation is not likely due to chance, meaning that the effect
 of spending on terrorist attacks is statistically significant. The regression analysis
-confirms this effect, with defense spending being an excellent predictor
-  
+confirms this effect, with defense spending being an excellent predictor of terrorist attacks.
+
+# V. Implications
+  This last insight has remarkable implications for those wishing to understand
+the effect of the War on Terror. If it is assumed that defense spending
+is a good proxy for military action and that military action is the foremost
+feature of the War on Terror, then the fact that increasing military spending 
+has a positive relation to terrorist attacks seems to suggest that the War on Terror
+is having the opposite effect! If such an account is true, then the implication
+is that there needs to be some serious re-evaluation towards the means the US
+has taken to try and curb terrorism.
+
+  Of course, one could point out that correlation has no say in the direction of the relation.
+It is equally plausible that the increased terrorist attacks cause more to be spent
+on the military. This is possible, yet if it is true it does not mean therefore that the War on Terror
+has been effective. That there has not been a consistent decrease in terrorist attacks
+in the 20 years since 9/11 even when military spending has nearly quadrupled still
+indicates that these methods are not working well. The question remains, how much more
+money should continue to be put towards a war that has not made much progress towards
+victory.
+
+# VI. Limitations
+  There are several limitations to my analysis that temper these implications. I
+mentioned that we should assume that defense spending is a good proxy for military action
+and therefor the War on Terror. This assumption may not hold. If the increase in
+defense spending was spent more on research than on actual troop deployment, then
+defense spending is not a perfect proxy for the War on Terror and thus the preceding
+implications hold little water.
+
+  In addition, given that the data spans the course of 50 years, the standards
+for data collection probably shifted a large amount in that time. If data collection
+was not consistent, then we cannot be sure that the data analysis was valid. There
+remains the possibility that the reason terrorist attacks increased post 9/11 was
+because data on those attacks were better collected in the the 2000s than the 1970s.
+
+  If one wanted to improve this analysis, they would definitely need to gather
+more data. If they could find datasets on troop deployment in West Asia, technology
+changes as a result of the War on Terror, quantitative or qualitative impact of policies 
+implemented post 9/11 then one would gain a more holistic knowledge of what constitutes
+the War on Terror. One could do a similar analysis to what I did above but zooming
+in on individual regions and seeing what impact the War on Terror had there. This 
+would also aid in accounting for the data collection possibility,
+since one would be able to just look at data after 2001.
+
+  Another way to improve the analysis would be 
+
+# VII. Concluding Remarks
+  In spite of these limitations—or perhaps because of them—the analsyis conducted
+above provided new insights into future research possibilities. It offers the possibility
+of determining the statistical effects of the past 20 years of the War on Terror.
+It opens up new avenues for understanding the relationship between U.S. foreign
+policy and acts of terror. 
+
+  On a final note, one should take care not to become too enraptured by the data
+to forget that what is at stake here is not just the answer to a statistical question.
+The choices that are made when it comes to the War on Terror and addressing terrorism have tangible effects.
+These effects are felt in lives lost, buildings destroyed, and communities upended.
+A true measure of the effects of the War on Terror should not just consider whether
+the War on Terror accounts for a sufficient amount of variance in global terrorist rates,
+but also whether that effect outweighs the secondary effects it has on the places
+and people it turns its attention towards.
