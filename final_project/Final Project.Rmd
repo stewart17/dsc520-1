@@ -29,7 +29,7 @@ the insights I gained, the implications these insights raise, and the limitation
 inherent to my analysis. I hope the reader will find this analysis as interesting
 and impactful as I did. 
 
-# II. The Problem at Hand
+# II. The Problem at Hand (Step 1)
   At first, I began by posing the problem as broadly as possible: did the War on
 Terror have a significant effect on terrorism worldwide and abroad. I immediately
 ran into difficulties trying to break that question into manageable parts. What exactly
@@ -58,7 +58,7 @@ in Section VI.
 # III. Addressing the Problem
   During the second step of my project, I imported data, cleaned it, and analyzed it.
   
-## Data Importing and Cleaning
+## Data Importing and Cleaning (Step 2)
   I used 3 datasets during my analysis. The first was the [Global Terrorism Database](https://www.kaggle.com/datasets/START-UMD/gtd), which contained over 100
 variables for each attack specifying things such as tactics, perpetrators, targets, and outcomes. I determined that the following variables were most relevant to my analysis:
 
@@ -92,10 +92,21 @@ terror_war %>%
   slice(c(1:5),(50000:50005),(175000:175005))
 ```
 
-##
+## Data Analysis (Step 2)
+  Now that the dataset had been imported and cleaned, I could begin my analysis.
+The plan was first to slice the data into attacks before 9/11 and after 9/11. Then,
+observe comparative statistical characteristics between the slices. Finally, 
+perform correlation analysis on the Defense Spending and Number of Terrorist Attacks.
+  One problem I ran into at this stage was meaningfully comparing variables to one another.
+Given that the defense spending values were repeated multiple times (more terrorist attacks
+per year than number of defense budgets naturally), the effect of spending was vastly
+overstated. To correct for this, I created a new dataset that contained one column
+for defense spending, and one for total attacks per year. This allowed me a greater
+ability to see the general relationship between attacks and spending.
+  I created the following tables/graphs to visualize the results of my analysis.
+Please note that the red line in the first three graphs mark 9/11.
+
 ```{r analysis-so-far, echo=FALSE}
-
-
 library(pastecs)
 # split into before and after
 before <- terror_war %>% filter(iyear <= 2001)
@@ -118,18 +129,72 @@ cor1 <- cor.test(attack_yr$n, spending$DefenseBudget, method="spearman", conf.le
 cor2 <- cor(attack_yr$n, spending$DefenseBudget, method="spearman")
 r_sq <- cor2 ** 2
 # find p-values
-cor1
 # p-value < .005 so not likely due to chance
 ```
-```{r}
-war_cor
+
+```{r visualizations, echo=FALSE}
+# attacks by year
+attacks_hist <- ggplot(data=terror_war)+ geom_histogram(aes(x=iyear), binwidth = 1, fill='orchid4') + xlab("Year") + ylab("Terrorist Attacks") + ggtitle("Terrorist Attacks by Year (1970-2019)") + geom_vline(xintercept = 2001, colour='red')
+attacks_hist
+
+# us attacks by year
+attacks_us <- ggplot(data=us_terrorism) + geom_histogram(aes(x=iyear), binwidth=1, fill='blue') + xlab("Year") + ylab("Terrorist Attacks") + ggtitle("US Terrorist Attacks by Year (1970-2019)") + geom_vline(xintercept = 2001, colour='red')
+attacks_us
+
+# military expenditure bar
+expenses <- ggplot(data = military_spending, aes(x=Year, y=DefenseBudget)) + geom_bar(stat="identity", fill='green4')+ xlab("Year") + ylab("Defense Budget") + ggtitle("US Military Expenditure by Year (1960-2020)") + geom_vline(xintercept=2001, colour='red')
+expenses
+
+# plotting military expenditure against terrorist attacks
+scatter1 <- ggplot(war_cor, aes(x=DefenseBudget, y=n)) + geom_point(aes(color=iyear)) + xlab("Defense Budget") + ylab("Terrorist Attacks Per Year") +
+  ggtitle("Relationship Between Defense Budget and Terrorist Attacks")
+scatter1
 ```
+  And here is a correlation table of GDP, US Population, # of Attacks, and Defense Budget
+in order to place the correlation of defense budget and attacks into context.
+```{r table, echo=FALSE}
+cor_table <- cor(war_cor, method="spearman")
+colnames(cor_table) <- c("Year", "Attacks", "DefenseBudget", "GDP", "Population")
+rownames(cor_table) <- c("Year", "Attacks", "DefenseBudget", "GDP", "Population")
+knitr::kable(cor_table)
+```
+
+### Regression Analysis
+  Observing the scatterplot above, it appears the Defense Budget and Attacks Per Year
+follow a linear relationship. This motivated me to do a simple regression analysis.
+The below graph is the scatterplot above with a regression line fitted to it.
+
 ```{r regression, echo=FALSE, include=FALSE}
-library(ggplot2)
 # simple regression outcome: Attacks per year, predictor: defense budget
 terror_lm <-  lm(n ~ DefenseBudget, data=war_cor)
 summary(terror_lm)
-scatter1 <- ggplot(war_cor, aes(x=DefenseBudget, y=n)) + geom_point(aes(color=iyear)) +  geom_smooth(method="lm") + xlab("Defense Budget") + ylab("Terrorist Attacks Per Year") + 
+scatter2 <- ggplot(war_cor, aes(x=DefenseBudget, y=n)) + geom_point(aes(color=iyear)) +  geom_smooth(method="lm") + xlab("Defense Budget") + ylab("Terrorist Attacks Per Year") + 
   ggtitle("Relationship Between Defense Budget and Terrorist Attacks with Regression Line")
-scatter1
+scatter2
 ```
+
+## Recommendation for Models
+  I would recommend doing time series analysis and building a time series model of 
+terrorist attacks per year. This would help in identifying if there are  other
+reasons for rising terrorist attacks outside of Defense Spending. For instance,
+if particular years correlate with increased terrorist attacks the next year, one
+could investigate events that may have occurred that explain that rise. In this way,
+we can begin to build a more robust idea of the relationship between US military action
+and terror.
+  The model would be useful in trying to predict the amount of terrorist attacks in 
+future years. This model could be compared to the regression model to see which
+is more accurate. If the time series model is more accurate than the regression model,
+it is again likely there is a third (or more) relation with changing terrorist rates.
+
+# Insights Gained
+  There were a number of insights gained from the preceding analysis. Military 
+expenditure skyrocketed post 9/11, which is suggestive of an increase in military
+action in accordance with the War on Terror. Terrorist attacks too, increased
+after 2001, though they decreased domestically in the US.
+  The most striking insight gained by far from the analysis is the positive
+correlation between US defense spending and terrorist attacks per year. This implies
+that as defense spending rose, so too did the number of terrorist attacks. The analysis
+also showed that this relation is not likely due to chance, meaning that the effect
+of spending on terrorist attacks is statistically significant. The regression analysis
+confirms this effect, with defense spending being an excellent predictor
+  
